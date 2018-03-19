@@ -1,0 +1,30 @@
+{% extends 'page.twig' %}
+
+{% block header %}
+<div class="ml-auto col-md-8 mr-auto">
+    <h1 class="cntr">Internal Error</h1>
+</div>
+{% endblock header %}
+
+{% block main %}
+    
+    
+    <section class="row">
+        <div class="ml-auto col-md-8 mr-auto">
+            <p>Sorry, but an error has occured. <a href="{{base}}/">Click here to return home.</a></p>
+            <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Show details</button>
+            <br/>
+            <hr>
+            <div class="collapse" id="collapseExample">
+            <div class="well">
+                {{message|raw}}
+            </div>
+            </div>
+            
+	       </div>
+    </section>
+{% endblock main %}
+
+{% block pagefooter %}
+{# I don't want a footer #}
+{% endblock pagefooter %}

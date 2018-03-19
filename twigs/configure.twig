@@ -1,0 +1,26 @@
+{% extends 'page.twig' %}
+
+{% block header %}
+    <div class="cntr col-md-12">
+        <h1>Configure</h1>
+    </div>
+{% endblock header %}
+
+{% block main %}
+
+<section class="row">
+    <article class="ml-auto col-md-10 col-sm-12 mr-auto">
+        <div class="jumbotron vertical-center">
+            <section class="row">
+                <div class="container col-md-8">
+                    <p class="cntr">
+                        <a href="{{base}}/configure/modules" class="btn btn-outline-dark" role="button">Add Modules</a>
+                        <a href="{{base}}/configure/checkers" class="btn btn-outline-dark" role="button">Allocate Checkers</a>
+                    </p>
+                </div>
+            </section>
+        </div>
+    </article>
+</section>
+    
+{% endblock main %}

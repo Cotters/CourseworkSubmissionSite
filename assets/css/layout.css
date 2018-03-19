@@ -1,0 +1,32 @@
+body {
+    font-family: sans-serif;
+    background-color: #fff
+}
+
+header {
+    margin-top:2rem
+}
+
+.cntr {
+    text-align: center
+}
+.checkb {
+    color: green
+}
+.delb {
+    color: red
+}
+.actb,
+.admb,
+.editb,
+.delb,
+.devb,
+.reqb,
+.rdob,
+.disb,
+.checkb {
+    cursor: pointer
+}
+.noconfirm {
+    color: red
+}

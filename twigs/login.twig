@@ -1,0 +1,37 @@
+{% extends 'page.twig' %}
+
+{% block pageheader %}
+	<h1 class="cntr">Login</h1>
+{% endblock pageheader %}
+
+{% block main %}
+<div class="container">
+    <section class="row">
+        <article class="ml-auto col-lg-6 col-md-8 col-sm-12 mr-auto">
+            <form class="form-horizontal" action='{{base}}/login' method="POST">
+                <fieldset>
+                    <div class="form-group">
+                        <!-- Username -->
+                        <label class="control-label"  for="username">Username</label>
+                        <input type="text" id="un" name="login" value="{{context.user().login}}" placeholder="John" class="form-control" required />
+                    </div>
+                    <div class="form-group">
+                        <!-- Password -->
+                        <label class="control-label" for="password">Password</label>
+                        <input type="password" id="password" name="password" placeholder="******" class="form-control" required />
+                    </div>
+                    <div class="control-group">
+                        <button class="btn btn-primary btn-block" type="submit">Login</button>
+                    </div>
+                    <small><a href="{{base}}/forgot">Forgotten password</a></small>
+                    <small><a class="float-right" href="{{base}}/confirm">Resend email confirmation</a></small>
+                </fieldset>
+            </form>
+            {% include 'message.twig' %}
+        </article>
+	</section>
+</div>
+{% endblock main %}
+
+{% block footer %}
+{% endblock footer %}

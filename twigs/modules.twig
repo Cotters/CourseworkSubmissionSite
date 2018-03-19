@@ -1,0 +1,151 @@
+{% extends 'page.twig' %}
+
+{% block header %}
+    <div class="cntr col-md-12">
+        <h1>Configure</h1>
+    </div>
+{% endblock header %}
+
+{% block scripts %}
+    <script src="{{fwurls.parsley}}"></script>
+    <script src="{{assets}}/js/util.js"></script>
+    <script src="{{assets}}/js/bgfade.js"></script>
+    <!-- JS to add the module to the table -- error with URL -->
+<!--    <script src="{{assets}}/js/addmod.js"></script>-->
+{% endblock scripts %}
+
+{% block onload %}
+    $('#addmform').on('submit', false).parsley()
+    $('#addb').on('click', function(e){
+        var data = {op : 'addmod', name: '', leader : ''}
+        var frm = $('#addmform')
+        
+        $('input:text', frm).each(function(index, element){
+            data[$(this).attr('name')] = $(this).val()
+        })
+        
+        $($('#leadersel'), frm).each(function(index, element){
+            data[$(this).attr('name')] = $(this).val()
+        })
+        
+        $.post('{{base}}/ajax.php', data, function(ret){
+            $('#addm').modal('hide')
+            $('#mtab tbody').append('<tr data-id="'+ret+'"><td>'+data.name+'</td>'+
+                '<td>'+data.leader+'</td>'+
+                '<td><i class="editb fa fa-pencil"></i></td>' +
+                '<td><i class="delb fa fa-trash-o"></i></td></tr>'
+            )
+            doBGFade('#mtab tbody tr:last-child', [245,255,159], [255,255,255], 'transparent', 75, 20, 4)
+        })
+    })
+    $('#mtab').on('click', function(e){
+        var x = $(e.target)
+        if (x.hasClass('delb'))
+        {
+            e.preventDefault();
+            e.stopPropagation();
+            bootbox.confirm('Are you sure you you want to delete this module?', function(r){
+                if (r)
+                {
+                    var tr = x.parent().parent()
+                    $.post('{{base}}/ajax.php', {
+                        op:	'delbean',
+                        bean: 'module',
+                        id: tr.data('id')
+                        },
+                        function(data){
+                            tr.css('background-color', 'yellow').fadeOut(1500, function(){ tr.remove() })
+                        }
+                    )
+                }
+            })
+        }
+        else if (x.hasClass('editb'))
+        {
+            var tr = x.parent().parent() // change to edit module
+            window.location.href = '{{base}}/configure/edit/module/' + tr.data('id');
+        }
+        else if (x.hasClass('active'))
+        {
+            dotoggle(e, x, 'user', 'active')
+        }
+    })
+{% endblock onload %}
+
+{% block main %}
+{% if context.hasadmin %}
+    <section class="row">
+        <article class="ml-auto col-md-8 mr-auto">
+            {% include 'paginate.twig' with { page : page, pagesize: pagesize, pages: pages} %}
+            <table class="table table-striped table-hover" id="mtab">
+                <thead>
+                    <tr>
+                        <th>Module Name</th>
+                        <th>Module Leader</th>
+                        <th colspan="2">&nbsp;</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- modmap contains module name and module leader login (table joins) -->
+                    {% for key, m in modmap %}
+                        <tr data-id="{{key}}">
+                            <td>{{m.name}}</td>
+                            <td>{{m.login}}</td>
+                            <td><i class="editb fa fa-pencil"></i></td>
+                            <td><i class="delb fa fa-trash-o"></i></td>
+                        </tr>
+                    {% else %}
+                        <tr><td colspan="4">No modules defined</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% include 'paginate.twig' with { page : page, pagesize: pagesize, pages: pages} %}
+            <p><button class="btn btn-primary" data-toggle="modal" data-target="#addm" type="button">Add Module</button></p>
+        </article>
+    </section>
+    {% include 'message.twig' %}
+    <div class="modal fade" id="addm" tabindex="-1" role="dialog" aria-labelledby="Add Module" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">Add Module</h4>
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                </div>
+                <div class="modal-body">
+                    <form action="#" method="post" id="addmform">
+                        <div class="form-group">
+                            <label for="un" class="control-label">Module Name</label>
+                            <input type="text" id="mname" name="name" placeholder="CSC3123" class="form-control" required data-parsley-trigger="change" data-parsley-remote-reverse="false" data-parsley-remote="{{base}}/ajax.php" data-parsley-remote-message="That module name is not available" data-parsley-type="alphanum" />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Module Leader</label>
+                            <select id="leadersel" name="leader" class="form-control" required>
+                                <option selected disabled>Select</option>
+                                {% for l in leaders %}                                
+                                    <option value="{{l.login}}">{{l.login}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="addb">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% else %}
+    <div class="jumbotron vertical-center">
+            <section class="row">
+                <div class="container col-md-8">
+                    <h2 class="cntr">Only administrators can view this page.</h2>
+                    <p class="cntr">
+                        <a href="{{base}}/login" class="btn btn-primary" role="button">Login</a>
+                        <a href="{{base}}/register" class="btn btn-success" role="button">Register</a>
+                    </p>
+                </div>
+            </section>
+        </div>
+{% endif %}
+{% endblock main %}

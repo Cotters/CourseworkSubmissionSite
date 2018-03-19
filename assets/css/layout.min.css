@@ -1,0 +1,16 @@
+body {
+    font-family:sans-serif;
+    background-color: #fff;
+}
+
+.cntr {
+    text-align:center
+}
+
+.noconfirm,.delb{
+    color:red
+}
+
+.actb, .admb, .editb, .delb, .devb, .reqb, .rdob, .disb {
+    cursor:pointer;
+}

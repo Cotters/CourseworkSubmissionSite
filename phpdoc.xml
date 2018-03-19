@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<phpdoc>
+  <parser>
+    <target>../api</target>
+  </parser>
+  <transformer>
+    <target>../api</target>
+  </transformer>
+  <files>
+    <file>ajax.php</file>
+    <file>index.php</file>
+    <directory>class/</directory>
+    <directory>class/config</directory>
+    <directory>class/framework</directory>
+    <directory>class/models</directory>
+    <directory>class/utility</directory>
+    <ignore>devel/hack.php</ignore>
+    <ignore>devel/testautoload.php</ignore>
+    <ignore>vendor</ignore>
+  </files>
+</phpdoc>

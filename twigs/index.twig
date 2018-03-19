@@ -1,0 +1,49 @@
+{% extends 'page.twig' %}
+
+{% block onload %}
+    $('#alert').on('click', function(){
+        bootbox.alert('Hello World')
+    })
+{% endblock onload %}
+
+{% block header %}
+{% endblock header %}
+
+{% block main %}
+
+    <div class="container">
+    <h1>Welcome to Pass Papers</h1>
+    <p>A place for students and teachers.</p>
+
+    <hr />    
+    <div class="card-deck">
+        <div class="card">
+            <img class="card-img-top" src="{{assets}}/images/student.png" alt="Card image cap">
+            <div class="card-body">
+                <h4 class="card-title">Students</h4>
+                <p class="card-text">Find the past papers you need that have been added by your module leader.</p>
+                <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+            </div>
+        </div>
+        <div class="card">
+            <img class="card-img-top" src="{{assets}}/images/teachers.png" alt="Card image cap">
+            <div class="card-body">
+                <h4 class="card-title">Module Leaders</h4>
+                <p class="card-text">Upload your own papers to the site, then add moderators to check each paper for you.</p>
+                <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+            </div>
+        </div>
+        <div class="card">
+            <img class="card-img-top" src="{{assets}}/images/moderator.png" alt="Card image cap">
+            <div class="card-body">
+                <h4 class="card-title">External Moderators</h4>
+                <p class="card-text">If you are an external moderator, you can register under this role to check papers you have been given to inspect.</p>
+                <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+            </div>
+        </div>
+    </div>
+    <hr />
+
+    </div><!-- Container -->
+
+{% endblock main %}

@@ -1,0 +1,46 @@
+{% extends 'page.twig' %}
+
+{% import 'form.twig' as f %}
+
+{% block scripts %}
+    <script src="{{fwurls.parsley}}"></script>
+    <script src="{{assets}}/js/util.js"></script>
+{% endblock scripts %}
+
+{% block onload %}
+    $('#mform').on('submit', function(e) {
+        return $(this).parsley().validate();
+    });
+{% endblock onload %}
+
+{% block header %}
+    <section class="col-md-12">
+        <h1 class="cntr">Module &ldquo;{{bean.name}}&rdquo;</h1>
+    </section>
+{% endblock header %}
+
+{% block main %}
+    <section class="row">
+        <article class="ml-auto col-md-10 mr-auto">
+            <form action="#" method="post" id="mform" data-parsley-validate>
+                {{f.hidden({name: 'bean', value: bean.id})}}
+                <fieldset>
+                    <legend>Module details</legend>
+                    {{f.text({ label: 'Name', id: 'mname', name: 'name', value: bean.name, required: true, ph: 'CSC3123' })}}
+                    <select class="form-control" required>
+                        <option disabled>Select a module leader</option>
+                        {% for l in leaders %}
+                            <!-- leader represents the module leader, so select this option -->
+                            <option {% if leader.id == l.id %} selected {% endif %} value="{{l.id}}">{{l.login}}</option>
+                        {% endfor %}
+                    </select>
+                </fieldset>
+                <br />
+                <button class="btn btn-primary btn-lg" type="submit">Save</button>
+            </form>
+        </article>
+    </section>
+{% endblock main %}
+
+{% block pagefooter %}
+{% endblock pagefooter %}

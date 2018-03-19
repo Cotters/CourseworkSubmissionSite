@@ -1,0 +1,146 @@
+{% extends 'page.twig' %}
+
+{% block header %}
+    <div class="cntr col-md-12">
+        <h1>Allocate Papers</h1>
+    </div>
+{% endblock header %}
+
+{% block scripts %}
+    <script src="{{fwurls.parsley}}"></script>
+    <script src="{{assets}}/js/util.js"></script>
+    <script src="{{assets}}/js/bgfade.js"></script>
+{% endblock scripts %}
+
+{% block onload %}
+    $('#addcform').on('submit', false).parsley()
+    $('#addb').on('click', function(e){
+        var data = {op : 'addchecker', pid: 0, clogin : '', pname: '', duedate: ''}
+        var frm = $('#addcform')
+        
+        $($('#papersel'), frm).each(function(index, element){
+            data[$(this).attr('name')] = $(this).val()
+            data['pname'] = $('option:selected',this).text()
+        })
+
+        $($('#checkersel'), frm).each(function(index, element){
+            data[$(this).attr('name')] = $(this).val()
+        })
+
+        $($('#duedate'), frm).each(function(index, element){
+	           data[$(this).attr('name')] = $(this).val();
+        })
+        
+        $.post('{{base}}/ajax.php', data, function(ret){
+            $('#addc').modal('hide')
+            $('#ctab tbody').append('<tr data-id="'+ret+'"><td>'+data.clogin+'</td>'+
+                '<td>'+data.pname+'</td>'+
+                '<td><i class="delb fa fa-trash-o"></i></td></tr>'
+            )
+            doBGFade('#ctab tbody tr:last-child', [245,255,159], [255,255,255], 'transparent', 75, 20, 4)
+        })
+    })
+    $('#ctab').on('click', function(e){
+        var x = $(e.target)
+        if (x.hasClass('delb'))
+        {
+            e.preventDefault();
+            e.stopPropagation();
+            bootbox.confirm('Are you sure you you want to remove this checker?', function(r){
+                if (r)
+                {
+                    var tr = x.parent().parent()
+                    $.post('{{base}}/ajax.php', {
+                        op:	'delbean',
+                        bean: 'checker',
+                        id: tr.data('id')
+                        },
+                        function(data){
+                            tr.css('background-color', 'yellow').fadeOut(1500, function(){ tr.remove() })
+                        }
+                    )
+                }
+            })
+        }
+    })
+    //$('#addcform').datepicker.defaults.format = "mm/dd/yyyy";
+    //$('#addcform').$('.datepicker').datepicker();
+{% endblock onload %}
+
+{% block main %}
+    <section class="row">
+        <article class="ml-auto col-md-8 mr-auto">
+            {% include 'paginate.twig' with { page : page, pagesize: pagesize, pages: pages} %}
+            <table class="table table-striped table-hover" id="ctab">
+                <thead>
+                    <tr>
+                        <th>Checker</th>
+                        <th>Paper</th>
+                        <th colspan="1">&nbsp;</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- checkmap contains checker user login and checker paper name (table joins) -->
+                    {% for key, checker in checkmap %}
+                        <tr data-id="{{key}}">
+                            <td>{{checker.login}}</td>
+                            <td>{{checker.filename}}</td>
+                            <td><i class="delb fa fa-trash-o"></i></td>
+                        </tr>
+                    {% else %}
+                        <tr><td colspan="4">No modules defined</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% include 'paginate.twig' with { page : page, pagesize: pagesize, pages: pages} %}
+            <p><button class="btn btn-primary" data-toggle="modal" data-target="#addc" type="button">Add Checker</button></p>
+        </article>
+    </section>
+    {% include 'message.twig' %}
+    <div class="modal fade" id="addc" tabindex="-1" role="dialog" aria-labelledby="Add Checker" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">Add Checker</h4>
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                </div>
+                <div class="modal-body">
+                    <form action="#" method="post" id="addcform">
+                        <!-- Select paper -->
+                        <div class="form-group">
+                            <label class="control-label">Papers</label>
+                            <select id="papersel" name="pid" class="form-control" required>
+                                <option selected disabled>Select a paper</option>
+                                {% for p in papers %}                                
+                                    <option value="{{p.id}}">{{p.filename}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <!-- Select checker -->
+                        <div class="form-group">
+                            <label class="control-label">Checker</label>
+                            <select id="checkersel" name="clogin" class="form-control" required>
+                                <option selected disabled>Select a checker</option>
+                                {% for u in users %}                                
+                                    <option value="{{u.login}}">{{u.login}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group date" data-provide="datepicker">
+                                <input id="duedate" type="text" name="duedate" class="form-control" placeholder="dd/mm/yy" />
+                                <div class="input-group-addon">
+                                    <i class="fa fa-calendar-check-o" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="addb">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock main %}
